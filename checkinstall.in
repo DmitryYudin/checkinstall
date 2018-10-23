@@ -2416,7 +2416,8 @@ else
 fi
 
 # Here comes the .spec file:
-
+[ "$RECOMMENDS" ] && RECOMMENDS_="Recommends: $RECOMMENDS"
+[ "$SUGGESTS" ] && SUGGESTS_="Suggests:  $SUGGESTS"
    cat > "$SPEC_PATH" << EOF
 Summary:   $SUMMARY
 Name:      $NAME
@@ -2428,8 +2429,8 @@ Group:     $PKG_GROUP
 BuildRoot: $BROOTPATH
 Provides:  $PROVIDES
 Requires:  $REQUIRES,/bin/sh
-Recommends: $RECOMMENDS
-Suggests:  $SUGGESTS
+$RECOMMENDS_
+$SUGGESTS_
 
 %description
 EOF
@@ -2613,6 +2614,8 @@ cd "$DIRECTORIO_FUENTE"
 
 mkdir $BUILD_DIR/DEBIAN
 
+[ "$RECOMMENDS" ] && RECOMMENDS_="Recommends: $RECOMMENDS"
+[ "$SUGGESTS" ] && SUGGESTS_="Suggests: $SUGGESTS"
 cat << EOF | sed "s/ $//" | egrep ": " >> $BUILD_DIR/DEBIAN/control
 Package: $PKG_BASENAME
 Priority: extra
@@ -2622,8 +2625,8 @@ Maintainer: $MAINTAINER
 Architecture: $ARCHITECTURE
 Version: ${VERSION}-${RELEASE}
 Depends: $REQUIRES
-Recommends: $RECOMMENDS
-Suggests: $SUGGESTS
+$RECOMMENDS_
+$SUGGESTS_
 Provides: $PROVIDES
 Conflicts: $CONFLICTS
 Replaces: $REPLACES
