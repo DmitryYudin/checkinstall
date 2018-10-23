@@ -1333,7 +1333,7 @@ fi
 
          # If we did not then try getting it from the config.log file
          if [ -f "$DIRECTORIO_FUENTE/config.log" ]; then
-            VERSION=`grep '#define VERSION' config.log| awk -F \" '{print $ 2}'`
+            VERSION=`grep -m 1 '#define VERSION' config.log| awk -F \" '{print $ 2}'`
 
          else
 
