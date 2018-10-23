@@ -2899,7 +2899,8 @@ if ! [ $FAILED -gt 0 ]; then
       echo
 
    fi
-      
+else
+   exit 1
 fi
 
 
