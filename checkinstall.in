@@ -1291,7 +1291,7 @@ fi
 
       # Some sanity checks
       ! [ "$SUMMARY" ] && SUMMARY=`head -1 description-pak`
-      ! [ "$NAME" ] && NAME=`echo "$PKG_BASENAME" | rev | cut -f2- -d"-" | rev`
+      ! [ "$NAME" ] && NAME=`echo "$PKG_BASENAME" | sed -e 's/\(.*\)-[0-9].*/\1/'`
 
       echo "$NAME" | grep -e "[[:blank:]]" &> /dev/null
       if [ $? -eq 0 ]; then
@@ -1325,7 +1325,7 @@ fi
       fi
 
 
-      ! [ "$VERSION" ] && VERSION=`echo "$PKG_BASENAME" | rev | cut -f1 -d"-" | rev`
+      ! [ "$VERSION" ] && VERSION=`echo "$PKG_BASENAME" | sed -e 's/.*-\([0-9].*$\)/\1/'`
 
       ## Did we get a usable version?
 
