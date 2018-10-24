@@ -2495,7 +2495,7 @@ EOF
 # Prepare directories to be included in the .spec file
 mv ${TMP_DIR}/newfiles ${TMP_DIR}/newfiles.tmp
 cat ${TMP_DIR}/newfiles.tmp | while read line; do
-   [ -d "${BUILD_DIR}/${line}" -o -L "${BUILD_DIR}/${line}" ] && echo -n "%dir " >> ${TMP_DIR}/newfiles
+   if [[ -d "${BUILD_DIR}/${line}" ]] || [[ -L "${BUILD_DIR}/${line}" && ! -f "${BUILD_DIR}/${line}" ]] ; then echo -n "%dir " >> ${TMP_DIR}/newfiles; fi
    echo "\"/${line}\"" >> ${TMP_DIR}/newfiles
 done
 
