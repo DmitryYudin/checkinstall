@@ -69,7 +69,11 @@ export TEXTDOMAIN=checkinstall
 
 # .spec file path
 DIRECTORIO_FUENTE=`pwd`
-PKG_BASENAME="`basename "$DIRECTORIO_FUENTE"`"
+if [ -f "$DIRECTORIO_FUENTE/CPackConfig.cmake" ]; then
+   PKG_BASENAME=$(grep -m 1 -i 'set(CPACK_PACKAGE_NAME ' "$DIRECTORIO_FUENTE/CPackConfig.cmake" | awk -F \" '{print $2}')
+else
+   PKG_BASENAME="`basename "$DIRECTORIO_FUENTE"`"
+fi
 SPEC_PATH=${PKG_BASENAME}.spec
 
 #############################################################################
@@ -1292,7 +1296,9 @@ fi
       # Some sanity checks
       ! [ "$SUMMARY" ] && SUMMARY=`head -1 description-pak`
       if [ -z "$NAME" ]; then
-         if [ -f "$DIRECTORIO_FUENTE/config.log" ]; then
+         if [ -f "$DIRECTORIO_FUENTE/CPackConfig.cmake" ]; then
+            NAME=$(grep -m 1 -i 'set(CPACK_PACKAGE_NAME ' "$DIRECTORIO_FUENTE/CPackConfig.cmake" | awk -F \" '{print $2}')
+         elif [ -f "$DIRECTORIO_FUENTE/config.log" ]; then
             NAME=`grep -m 1 '#define PACKAGE ' "$DIRECTORIO_FUENTE/config.log" | awk -F \" '{print $2}'`
             if [ -z "$NAME" ]; then
                NAME=`grep -m 1 '#define PACKAGE_TARNAME ' "$DIRECTORIO_FUENTE/config.log" | awk -F \" '{print $2}'`
@@ -1333,6 +1339,11 @@ fi
       fi
 
 
+      if [ -z "$VERSION" ]; then
+         if [ -f "$DIRECTORIO_FUENTE/CPackConfig.cmake" ]; then
+            VERSION=$(grep -m 1 -i 'set(CPACK_PACKAGE_VERSION ' "$DIRECTORIO_FUENTE/CPackConfig.cmake" | awk -F \" '{print $2}')
+         fi
+      fi
       ! [ "$VERSION" ] && VERSION=`echo "$PKG_BASENAME" | sed -e 's/.*-\([0-9].*$\)/\1/'`
 
       ## Did we get a usable version?
