@@ -40,7 +40,7 @@ install: all
 	mkdir -p $(CONFDIR)
 	install -m644  checkinstallrc-dist $(CONFDIR)
 	@if ! [ -f $(CONFDIR)/checkinstallrc ]; then \
-		cp $(CONFDIR)/checkinstallrc-dist $(CONFDIR)/checkinstallrc; \
+		mv $(CONFDIR)/checkinstallrc-dist $(CONFDIR)/checkinstallrc; \
 	else \
 		echo; \
 		echo; \
