@@ -71,6 +71,8 @@ export TEXTDOMAIN=checkinstall
 DIRECTORIO_FUENTE=`pwd`
 if [ -f "$DIRECTORIO_FUENTE/CPackConfig.cmake" ]; then
    PKG_BASENAME=$(grep -m 1 -i 'set(CPACK_PACKAGE_NAME ' "$DIRECTORIO_FUENTE/CPackConfig.cmake" | awk -F \" '{print $2}')
+elif [ -f "$DIRECTORIO_FUENTE/CMakeCache.txt" ]; then
+   PKG_BASENAME=$(grep -m 1 -i 'CMAKE_PROJECT_NAME:STATIC' "$DIRECTORIO_FUENTE/CMakeCache.txt" | awk -F "=" '{print $2}')
 else
    PKG_BASENAME="`basename "$DIRECTORIO_FUENTE"`"
 fi
@@ -1298,6 +1300,8 @@ fi
       if [ -z "$NAME" ]; then
          if [ -f "$DIRECTORIO_FUENTE/CPackConfig.cmake" ]; then
             NAME=$(grep -m 1 -i 'set(CPACK_PACKAGE_NAME ' "$DIRECTORIO_FUENTE/CPackConfig.cmake" | awk -F \" '{print $2}')
+         elif [ -f "$DIRECTORIO_FUENTE/CMakeCache.txt" ]; then
+            NAME=$(grep -m 1 -i 'CMAKE_PROJECT_NAME:STATIC' "$DIRECTORIO_FUENTE/CMakeCache.txt" | awk -F "=" '{print $2}')
          elif [ -f "$DIRECTORIO_FUENTE/config.log" ]; then
             NAME=`grep -m 1 '#define PACKAGE ' "$DIRECTORIO_FUENTE/config.log" | awk -F \" '{print $2}'`
             if [ -z "$NAME" ]; then
@@ -1343,6 +1347,7 @@ fi
          if [ -f "$DIRECTORIO_FUENTE/CPackConfig.cmake" ]; then
             VERSION=$(grep -m 1 -i 'set(CPACK_PACKAGE_VERSION ' "$DIRECTORIO_FUENTE/CPackConfig.cmake" | awk -F \" '{print $2}')
          fi
+
       fi
       ! [ "$VERSION" ] && VERSION=`echo "$PKG_BASENAME" | sed -e 's/.*-\([0-9].*$\)/\1/'`
 
