@@ -1354,16 +1354,25 @@ fi
       ## Did we get a usable version?
 
       if [  "$VERSION" = "$PKG_BASENAME" ]; then
-
+         VERSION=""
          # If we did not then try getting it from the config.log file
          if [ -f "$DIRECTORIO_FUENTE/config.log" ]; then
             VERSION=`grep -m 1 '#define VERSION ' "$DIRECTORIO_FUENTE/config.log" | awk -F \" '{print $2}'`
             if [ -z "$VERSION" ]; then
                VERSION=`grep -m 1 '#define PACKAGE_VERSION ' "$DIRECTORIO_FUENTE/config.log" | awk -F \" '{print $2}'`
             fi
+		 fi
 
-         else
+         if [ -z "$VERSION" ]; then
+            if command -v git >/dev/null 2>&1; then
+               tag=$(git describe --abbrev=0 --tags 2>>/dev/null) && \
+               if [[ "$tag" =~ .*([0-9]+\.[0-9]+\.[0-9]+.*) ]] ; then
+                  VERSION=${BASH_REMATCH[1]}
+               fi
+             fi
+         fi
 
+         if [ -z "$VERSION" ]; then
             # We use the current that if everything else fails
             VERSION=`date +%Y%m%d` 
          fi
